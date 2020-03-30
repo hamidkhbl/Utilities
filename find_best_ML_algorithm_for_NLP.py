@@ -52,7 +52,9 @@ def NLPML(text = "E:/Google Drive/git/Utilities/word_data_fixed.pkl",
     labels_train_1 = labels_train[:int(len(labels_train)/100)]
     #return features_train_transformed, features_test_transformed, labels_train, labels_test
     results = []
-
+    print('Performing ML algorithms on a sample of the data')
+    print('to find the algorithm with the highest accuracy...')
+    print()
     svm_tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4,1,10],
                      'C': [0.1,1, 10, 100, 1000, 6000]},
                     {'kernel': ['linear', 'sigmoid','poly'], 'C': [1, 10, 100, 1000,6000]}]
@@ -60,7 +62,7 @@ def NLPML(text = "E:/Google Drive/git/Utilities/word_data_fixed.pkl",
     svm_clf = GridSearchCV(svm.SVC(), svm_tuned_parameters)
     pred = svm_clf.fit(features_train_transformed_1, labels_train_1).predict(features_test_transformed)
     svm_accuracy = metrics.accuracy_score(labels_test, pred)
-    results.append({'algorithm':'SVM', 'Accuracy':svm_accuracy})
+    results.append({'algorithm':'SVM','classifier':svm_clf, 'Accuracy':svm_accuracy})
     print("SVM Accuracy:",metrics.accuracy_score(labels_test, pred))
     print('SVM Best parameters: ',svm_clf.best_params_)
     print()
@@ -71,14 +73,14 @@ def NLPML(text = "E:/Google Drive/git/Utilities/word_data_fixed.pkl",
     nb_accuracy = metrics.accuracy_score(labels_test, pred)
     print("GaussianNB Accuracy:",nb_accuracy)
     print('NB Best parameters: ',nb_clf.best_params_)
-    results.append({'algorithm':GaussianNB(), 'Accuracy':nb_accuracy})
+    results.append({'algorithm':'GaussianNB','classifier':nb_clf, 'Accuracy':nb_accuracy})
     print()
 
     dt_clf = tree.DecisionTreeClassifier()
     pred = dt_clf.fit(features_train_transformed_1, labels_train_1).predict(features_test_transformed)
     dt_accuracy = metrics.accuracy_score(labels_test, pred)
     print("DecisionTree Accuracy:",dt_accuracy)
-    results.append({'algorithm': tree.DecisionTreeClassifier(), 'Accuracy':dt_accuracy})
+    results.append({'algorithm': 'DecisionTree','classifier':dt_clf, 'Accuracy':dt_accuracy})
     print()
 
     rf_tuned_parameters = [{'n_estimators':[10,25,50,75,100,150]}]
@@ -87,15 +89,20 @@ def NLPML(text = "E:/Google Drive/git/Utilities/word_data_fixed.pkl",
     dt_accuracy = metrics.accuracy_score(labels_test, pred)
     print("RandomForest Accuracy:",dt_accuracy)
     print('RandomForest Best parameters: ',rf_clf.best_params_)
-    results.append({'algorithm':RandomForestClassifier(), 'Accuracy':dt_accuracy})
+    results.append({'algorithm':'RandomForest','classifier':rf_clf, 'Accuracy':dt_accuracy})
     print()
 
     
-"""     best = max(results, key=lambda x: x['Accuracy'])
+    best = max(results, key=lambda x: x['Accuracy'])
+    print('the best algorithm for this dataset is {0} with accuracy of {1} on a sample of the data'.format(best['algorithm'], best['Accuracy']))
+    clf = best['classifier']
+    pred = clf.fit(features_train_transformed, labels_train).predict(features_test_transformed)
+    accuracy = metrics.accuracy_score(labels_test, pred)
+    print('Accuracy of {0} on on the data is {1}'.format(best['algorithm'],accuracy))
+
     transformed_text = vectorizer.transform(newText)
-    clf = best['algorithm']
-    pred_text = clf.fit(features_train_transformed, labels_train).predict(transformed_text)
-    print(pred_text) """
+    pred_text = clf.fit(features_train_transformed_1, labels_train_1).predict(transformed_text)
+    print(pred_text) 
 # %%
 NLPML()
 
