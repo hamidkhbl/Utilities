@@ -58,6 +58,14 @@ def NLPML(text = "E:/Google Drive/git/Utilities/word_data_fixed.pkl",
     except:
         print('SVM returned error')
 
+    clf = GaussianNB()
+    pred = clf.fit(features_train_transformed_1, labels_train_1).predict(features_test_transformed)
+    NB_accuracy = metrics.accuracy_score(labels_test, pred)
+    print("GaussianNB Accuracy:",NB_accuracy)
+    results.append({'algorithm':'GaussianNB', 'Accuracy':NB_accuracy})
+
+    
+
     #transformed_text = vectorizer.transform(newText)
     #pred_text = clf.fit(features_train_transformed, labels_train).predict(transformed_text)
     #print(pred_text)
