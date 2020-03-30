@@ -19,7 +19,7 @@ path = os.path.join(os.path.dirname(__file__), '../ML/tools/')
 ### define method for selecting best algorithm for text classification
 def NLPML(text = "E:/Google Drive/git/Utilities/word_data_fixed.pkl",
             lable = "E:/Google Drive/git/Utilities/email_authors_fixed.pkl",
-            newText = ['love home and shopping','baseball work football','I am going to buy a new dress and makeup and lipstick','counterparti for ena nontermin inthemoney posit base upon fmtm inform']):
+            newText = ['I like to go out what about you?','I need some money plaese let me know if you can borrow me','love home and shopping love home and shopping love home and shopping','baseball work football','I am going to buy a new dress and makeup and lipstick','counterparti for ena nontermin inthemoney posit base upon fmtm inform']):
     words_file = text
     authors_file= lable
 
@@ -52,39 +52,50 @@ def NLPML(text = "E:/Google Drive/git/Utilities/word_data_fixed.pkl",
     labels_train_1 = labels_train[:int(len(labels_train)/100)]
     #return features_train_transformed, features_test_transformed, labels_train, labels_test
     results = []
-    try:
-        svm_clf = svm.SVC(kernel='rbf')
-        pred = svm_clf.fit(features_train_transformed_1, labels_train_1).predict(features_test_transformed)
-        svm_accuracy = metrics.accuracy_score(labels_test, pred)
-        results.append({'algorithm':'SVM', 'Accuracy':svm_accuracy})
-        print("SVM Accuracy:",metrics.accuracy_score(labels_test, pred))
-    except:
-        print('SVM returned error')
 
-    nb_clf = GaussianNB()
+    svm_tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4,1,10],
+                     'C': [0.1,1, 10, 100, 1000, 6000]},
+                    {'kernel': ['linear', 'sigmoid','poly'], 'C': [1, 10, 100, 1000,6000]}]
+
+    svm_clf = GridSearchCV(svm.SVC(), svm_tuned_parameters)
+    pred = svm_clf.fit(features_train_transformed_1, labels_train_1).predict(features_test_transformed)
+    svm_accuracy = metrics.accuracy_score(labels_test, pred)
+    results.append({'algorithm':'SVM', 'Accuracy':svm_accuracy})
+    print("SVM Accuracy:",metrics.accuracy_score(labels_test, pred))
+    print('SVM Best parameters: ',svm_clf.best_params_)
+    print()
+
+    nb_tuned_parameters = [{'var_smoothing':[1e-10,1e-9,1e-5,1e-3,1,10]}]
+    nb_clf = GridSearchCV(GaussianNB(),nb_tuned_parameters)
     pred = nb_clf.fit(features_train_transformed_1, labels_train_1).predict(features_test_transformed)
     nb_accuracy = metrics.accuracy_score(labels_test, pred)
     print("GaussianNB Accuracy:",nb_accuracy)
-    results.append({'algorithm':'GaussianNB', 'Accuracy':nb_accuracy})
+    print('NB Best parameters: ',nb_clf.best_params_)
+    results.append({'algorithm':GaussianNB(), 'Accuracy':nb_accuracy})
+    print()
 
     dt_clf = tree.DecisionTreeClassifier()
     pred = dt_clf.fit(features_train_transformed_1, labels_train_1).predict(features_test_transformed)
     dt_accuracy = metrics.accuracy_score(labels_test, pred)
     print("DecisionTree Accuracy:",dt_accuracy)
-    results.append({'algorithm':'DecisionTree', 'Accuracy':dt_accuracy})
+    results.append({'algorithm': tree.DecisionTreeClassifier(), 'Accuracy':dt_accuracy})
+    print()
 
-    rf_clf = RandomForestClassifier()
+    rf_tuned_parameters = [{'n_estimators':[10,25,50,75,100,150]}]
+    rf_clf = GridSearchCV(RandomForestClassifier(),rf_tuned_parameters)
     pred = rf_clf.fit(features_train_transformed_1, labels_train_1).predict(features_test_transformed)
     dt_accuracy = metrics.accuracy_score(labels_test, pred)
     print("RandomForest Accuracy:",dt_accuracy)
-    results.append({'algorithm':'RandomForest', 'Accuracy':dt_accuracy})
+    print('RandomForest Best parameters: ',rf_clf.best_params_)
+    results.append({'algorithm':RandomForestClassifier(), 'Accuracy':dt_accuracy})
+    print()
 
     
-
-
-    #transformed_text = vectorizer.transform(newText)
-    #pred_text = nb_clf.fit(features_train_transformed, labels_train).predict(transformed_text)
-    #print(pred_text)
+"""     best = max(results, key=lambda x: x['Accuracy'])
+    transformed_text = vectorizer.transform(newText)
+    clf = best['algorithm']
+    pred_text = clf.fit(features_train_transformed, labels_train).predict(transformed_text)
+    print(pred_text) """
 # %%
 NLPML()
 
