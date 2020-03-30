@@ -12,6 +12,7 @@ from sklearn import svm
 from sklearn.naive_bayes import GaussianNB
 from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.cluster import KMeans
 import os
 path = os.path.join(os.path.dirname(__file__), '../ML/tools/')
 #%%
@@ -72,6 +73,11 @@ def NLPML(text = "E:/Google Drive/git/Utilities/word_data_fixed.pkl",
     print("DecisionTree Accuracy:",dt_accuracy)
     results.append({'algorithm':'DecisionTree', 'Accuracy':dt_accuracy})
 
+    rf_clf = RandomForestClassifier()
+    pred = rf_clf.fit(features_train_transformed_1, labels_train_1).predict(features_test_transformed)
+    dt_accuracy = metrics.accuracy_score(labels_test, pred)
+    print("RandomForest Accuracy:",dt_accuracy)
+    results.append({'algorithm':'RandomForest', 'Accuracy':dt_accuracy})
 
     
 
