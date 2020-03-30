@@ -10,6 +10,8 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import classification_report
 from sklearn import svm
 from sklearn.naive_bayes import GaussianNB
+from sklearn import tree
+from sklearn.ensemble import RandomForestClassifier
 import os
 path = os.path.join(os.path.dirname(__file__), '../ML/tools/')
 #%%
@@ -58,16 +60,24 @@ def NLPML(text = "E:/Google Drive/git/Utilities/word_data_fixed.pkl",
     except:
         print('SVM returned error')
 
-    clf = GaussianNB()
-    pred = clf.fit(features_train_transformed_1, labels_train_1).predict(features_test_transformed)
-    NB_accuracy = metrics.accuracy_score(labels_test, pred)
-    print("GaussianNB Accuracy:",NB_accuracy)
-    results.append({'algorithm':'GaussianNB', 'Accuracy':NB_accuracy})
+    nb_clf = GaussianNB()
+    pred = nb_clf.fit(features_train_transformed_1, labels_train_1).predict(features_test_transformed)
+    nb_accuracy = metrics.accuracy_score(labels_test, pred)
+    print("GaussianNB Accuracy:",nb_accuracy)
+    results.append({'algorithm':'GaussianNB', 'Accuracy':nb_accuracy})
+
+    dt_clf = tree.DecisionTreeClassifier()
+    pred = dt_clf.fit(features_train_transformed_1, labels_train_1).predict(features_test_transformed)
+    dt_accuracy = metrics.accuracy_score(labels_test, pred)
+    print("DecisionTree Accuracy:",dt_accuracy)
+    results.append({'algorithm':'DecisionTree', 'Accuracy':dt_accuracy})
+
 
     
 
+
     #transformed_text = vectorizer.transform(newText)
-    #pred_text = clf.fit(features_train_transformed, labels_train).predict(transformed_text)
+    #pred_text = nb_clf.fit(features_train_transformed, labels_train).predict(transformed_text)
     #print(pred_text)
 # %%
 NLPML()
