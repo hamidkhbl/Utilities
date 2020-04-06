@@ -19,7 +19,7 @@ path = os.path.join(os.path.dirname(__file__), '../ML/tools/')
 ### define method for selecting best algorithm for text classification
 def NLPML(text = "E:/Google Drive/git/Utilities/word_data_fixed.pkl",
             lable = "E:/Google Drive/git/Utilities/email_authors_fixed.pkl",
-            newText = ['I like to go out what about you?','I need some money plaese let me know if you can borrow me','love home and shopping love home and shopping love home and shopping','baseball work football','I am going to buy a new dress and makeup and lipstick','counterparti for ena nontermin inthemoney posit base upon fmtm inform']):
+            newText = ['this is a test email full of joy happiness and good feelings, there is no job related thing here. we are in a different world today. Lets enjoy it. Shopping is hard these days even going. lets finish the email and test the algothim, it sould work']):
     words_file = text
     authors_file= lable
 
@@ -100,9 +100,9 @@ def NLPML(text = "E:/Google Drive/git/Utilities/word_data_fixed.pkl",
     accuracy = metrics.accuracy_score(labels_test, pred)
     print('Accuracy of {0} on on the data is {1}'.format(best['algorithm'],accuracy))
 
-    transformed_text = vectorizer.transform(newText)
+    """ transformed_text = vectorizer.transform(newText)
     pred_text = clf.fit(features_train_transformed_1, labels_train_1).predict(transformed_text)
-    print(pred_text) 
+    print(pred_text)  """
 # %%
 NLPML()
 
