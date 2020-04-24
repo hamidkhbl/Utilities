@@ -9,7 +9,7 @@ def rename_df_cols(df):
     '''
     new_cols = []
     for col in df.columns:
-        new_cols.append(col.rplace(' ','_'))
+        new_cols.append(col.strip().replace(' ','_'))
     df.columns = new_cols
 
     return df
